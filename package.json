@@ -1,0 +1,1 @@
+{"description":"Tracker Pengeluaran Bulanan — aplikasi fullstack dalam Bahasa Indonesia dan Rupiah (server Node.js + database SQLite, tanpa dependensi).","engines":{"node":">=22.5"},"license":"MIT","main":"server/index.js","name":"monthly-tracker-expenses","private":true,"scripts":{"start":"node server/index.js"},"type":"commonjs","version":"1.0.0"}
