@@ -4,6 +4,21 @@ Tracker Pengeluaran Bulanan — aplikasi fullstack dalam Bahasa Indonesia dan Ru
 
 Catat pemasukan, pengeluaran, dompet, dan transfer antar dompet.
 
+## Versi PWA (HP)
+
+Folder `pwa/` berisi versi mandiri yang bisa di-install di iOS dan Android
+tanpa server: data tersimpan di HP saja (localStorage), bisa dibuka
+offline, dan tidak tersinkron ke versi fullstack di atas.
+
+Coba di HP: https://testarossa-mykisah.github.io/monthly-tracker-expenses/pwa/
+(perlu GitHub Pages aktif: Settings → Pages → Deploy from a branch, main,
+`/(root)`).
+
+Install: iOS — buka di Safari, Share, Add to Home Screen. Android — buka
+di Chrome, Install app.
+
+Detailnya ada di `pwa/README.md`.
+
 ## Menjalankan
 
 Persyaratan: Node.js >= 22.5 (memakai `node:sqlite` bawaan). Tanpa
@@ -36,6 +51,7 @@ Database SQLite dibuat otomatis saat server pertama kali berjalan. File
 
 ```
 .
+├── pwa/                    # versi mandiri: localStorage, offline, installable
 ├── package.json            # zero dependencies, start: node server/index.js
 ├── server/
 │   ├── index.js            # HTTP stdlib: file statis + API JSON
