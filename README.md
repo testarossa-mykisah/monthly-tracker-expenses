@@ -2,12 +2,7 @@
 
 Tracker Pengeluaran Bulanan — aplikasi fullstack dalam Bahasa Indonesia dan Rupiah.
 
-Catat pemasukan, pengeluaran, dompet, dan transfer antar dompet. Versi ini
-adalah rebuild yang setia pada app Muse (tracker v14): struktur proyek,
-model data, nama action, rumus, guard, dan tampilannya disamakan. Ini
-**bukan** salinan kode sumber app Muse — kode sumber artifact Muse tidak
-tersedia sebagai file dan tidak bisa di-copy — melainkan penulisan ulang
-dari spesifikasi perilaku yang sama.
+Catat pemasukan, pengeluaran, dompet, dan transfer antar dompet.
 
 ## Menjalankan
 
