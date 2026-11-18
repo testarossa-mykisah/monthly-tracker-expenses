@@ -377,6 +377,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
 
 .history-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
@@ -406,7 +407,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   font-weight: 700;
   overflow-wrap: anywhere;
 }
-.row-actions { display: flex; gap: 6px; flex: 0 0 auto; }
+.row-actions { display: flex; gap: 6px; flex: 1 1 100%; justify-content: flex-end; }
 .row-actions .icon-btn { border-color: var(--ink); color: var(--ink); padding: 8px; }
 
 .bottom-spacer { height: 12px; }
@@ -484,6 +485,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   min-height: 44px;
   padding: 8px 14px;
   background: var(--white);
+  color: var(--ink);
   border: 2px solid var(--ink);
   border-radius: var(--radius-pill);
   font-weight: 800;
@@ -502,7 +504,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   border-radius: 16px;
   font-variant-numeric: tabular-nums;
 }
-.field-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+.field-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
 .field-row .field { min-width: 0; }
 .field input[type="date"],
 .field input[type="time"] {
@@ -580,12 +582,8 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
 
 @media (min-width: 480px) {
   .modal-backdrop { align-items: center; }
-}
-
-/* Layar sangat sempit: Tanggal dan Jam ditumpuk vertikal supaya tidak
-   bertumpuk atau terpotong. */
-@media (max-width: 360px) {
-  .field-row { grid-template-columns: minmax(0, 1fr); }
+  /* Layar lebar: Tanggal dan Jam boleh berdampingan, kolomnya lega. */
+  .field-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
