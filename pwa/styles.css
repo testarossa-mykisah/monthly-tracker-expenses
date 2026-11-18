@@ -165,9 +165,10 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
 
 .summary-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
 }
+.summary-item { min-width: 0; }
 
 .summary-label {
   margin: 0 0 6px;
@@ -182,7 +183,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   font-weight: 800;
   line-height: 1.2;
   font-variant-numeric: tabular-nums;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 .summary-value.is-negative { color: #ffb3c2; }
 
@@ -289,7 +290,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   transform: translateY(2px);
 }
 .legend-name { flex: 1 1 auto; min-width: 0; font-weight: 700; overflow-wrap: anywhere; }
-.legend-value { flex: 0 0 auto; font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; }
+.legend-value { flex: 0 0 auto; max-width: 55%; font-variant-numeric: tabular-nums; font-weight: 700; text-align: right; white-space: nowrap; }
 
 /* Buttons */
 .btn {
@@ -355,7 +356,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   display: block;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
 }
 .wallet-tile.is-alt .wallet-balance { color: var(--lime); }
 
@@ -390,9 +391,11 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
 .history-meta { display: block; margin-top: 2px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .history-amount {
   flex: 0 0 auto;
+  max-width: 60%;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   text-align: right;
+  white-space: nowrap;
 }
 .history-amount.is-expense { color: var(--red-dark); }
 .history-amount.is-income { color: #2f5d0a; }
@@ -600,3 +603,7 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
 .app {
   padding-top: calc(16px + env(safe-area-inset-top));
 }
+
+/* Dipakai JS bila angka masih meluber di ukuran font minimum: barulah
+   angka boleh pindah baris. */
+.fit-wrap { white-space: normal; overflow-wrap: anywhere; }
