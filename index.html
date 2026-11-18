@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Tracker Pengeluaran Bulanan — catat pemasukan, pengeluaran, dompet, dan transfer dalam Rupiah. Data tersimpan di browser.">
+  <meta name="color-scheme" content="light">
+  <title>Tracker Pengeluaran Bulanan</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#ringkasan">Lewati ke ringkasan</a>
+  <div class="page">
+    <main class="app" id="app">
+      <header class="header-card" aria-label="Navigasi bulan">
+        <div class="header-decor" aria-hidden="true"><span class="decor-a"></span><span class="decor-b"></span></div>
+        <p class="header-eyebrow">Tracker Pengeluaran</p>
+        <div class="month-nav">
+          <button type="button" class="month-btn" id="prevMonth" aria-label="Bulan sebelumnya">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <h1 class="month-label" id="monthLabel">November 2026</h1>
+          <button type="button" class="month-btn" id="nextMonth" aria-label="Bulan berikutnya">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+        <button type="button" class="this-month-btn" id="thisMonthBtn" hidden>Bulan ini</button>
+      </header>
+
+      <section class="summary-card" id="ringkasan" aria-label="Ringkasan bulan yang dipilih">
+        <div class="summary-grid">
+          <div class="summary-item">
+            <p class="summary-label">Jumlah Uang</p>
+            <p class="summary-value" id="totalMoney">Rp0</p>
+          </div>
+          <div class="summary-item">
+            <p class="summary-label">Sisa</p>
+            <p class="summary-value" id="remainingMoney">Rp0</p>
+          </div>
+        </div>
+        <div class="progress-row">
+          <div class="progress-track" role="progressbar" id="progressBar" aria-label="Progress pengeluaran" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="0%">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+          <span class="progress-pill" id="progressPill">0%</span>
+        </div>
+        <p class="over-label" id="overLabel" hidden></p>
+      </section>
+
+      <section class="pie-card" aria-labelledby="pieTitle">
+        <h2 class="section-title" id="pieTitle">Pengeluaran per Kategori</h2>
+        <div class="pie-empty" id="pieEmpty" hidden>
+          <p id="pieEmptyText">Belum ada pengeluaran bulan ini.</p>
+          <button type="button" class="btn btn-dark" data-open-expense>Catat pengeluaran</button>
+        </div>
+        <div class="pie-body" id="pieBody">
+          <svg class="pie-svg" id="pieSvg" viewBox="0 0 200 200" role="img" aria-label="Diagram lingkaran pengeluaran per kategori"></svg>
+          <ul class="pie-legend" id="pieLegend"></ul>
+        </div>
+      </section>
+
+      <section class="wallets-section" aria-labelledby="walletsTitle">
+        <div class="section-head">
+          <h2 class="section-title" id="walletsTitle">Dompet</h2>
+          <button type="button" class="btn btn-outline-dark" id="addWalletBtn">Tambah Dompet</button>
+        </div>
+        <p class="all-time-label">Saldo dompet dihitung dari seluruh riwayat, bukan hanya bulan ini.</p>
+        <ul class="wallet-list" id="walletList"></ul>
+      </section>
+
+      <section class="history-section" aria-labelledby="historyTitle">
+        <h2 class="section-title" id="historyTitle">Riwayat</h2>
+        <p class="history-empty" id="historyEmpty" hidden></p>
+        <ul class="history-list" id="historyList"></ul>
+      </section>
+
+      <div class="bottom-spacer" aria-hidden="true"></div>
+    </main>
+
+    <nav class="bottom-bar" aria-label="Aksi utama">
+      <button type="button" class="action-btn action-expense" data-open-expense>Pengeluaran</button>
+      <button type="button" class="action-btn action-income" data-open-income>Pemasukan</button>
+      <button type="button" class="action-btn action-transfer" id="openTransferBtn">Transfer</button>
+    </nav>
+  </div>
+
+  <div class="modal-backdrop" id="transactionModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="transactionTitle">
+      <div class="modal-head">
+        <h2 id="transactionTitle">Catat Pengeluaran</h2>
+        <button type="button" class="modal-close" data-close-modal aria-label="Tutup">Tutup</button>
+      </div>
+      <form id="transactionForm" novalidate>
+        <input type="hidden" id="txId" value="">
+        <input type="hidden" id="txType" value="expense">
+        <div class="field">
+          <label for="txAmount">Jumlah (Rp)</label>
+          <input type="text" id="txAmount" inputmode="numeric" autocomplete="off" placeholder="Contoh: 50000" required>
+        </div>
+        <div class="field" id="txCategoryField">
+          <label for="txCategory">Kategori</label>
+          <select id="txCategory"></select>
+        </div>
+        <div class="field">
+          <label for="txDescription">Keterangan</label>
+          <input type="text" id="txDescription" autocomplete="off" placeholder="Contoh: Makan siang">
+        </div>
+        <div class="field">
+          <label for="txWallet">Dompet</label>
+          <select id="txWallet" required></select>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="txDate">Tanggal</label>
+            <input type="date" id="txDate" required>
+          </div>
+          <div class="field">
+            <label for="txTime">Jam</label>
+            <input type="time" id="txTime" step="60">
+          </div>
+        </div>
+        <p class="form-warning" id="txWarning" hidden></p>
+        <p class="form-error" id="txError" role="alert" hidden></p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>Batal</button>
+          <button type="submit" class="btn btn-dark" id="txSubmit">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="transferModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="transferTitle">
+      <div class="modal-head">
+        <h2 id="transferTitle">Transfer antar Dompet</h2>
+        <button type="button" class="modal-close" data-close-modal aria-label="Tutup">Tutup</button>
+      </div>
+      <p class="transfer-note" id="transferBlockedNote" hidden>Butuh minimal 2 dompet untuk transfer. Tambah dompet dulu, lalu coba lagi.</p>
+      <form id="transferForm" novalidate>
+        <input type="hidden" id="transferId" value="">
+        <div class="field">
+          <label for="transferFrom">Dari Dompet</label>
+          <select id="transferFrom" required></select>
+          <p class="field-hint" id="transferFromBalance"></p>
+        </div>
+        <div class="field">
+          <label for="transferTo">Ke Dompet</label>
+          <select id="transferTo" required></select>
+        </div>
+        <div class="field">
+          <label for="transferAmount">Jumlah (Rp)</label>
+          <input type="text" id="transferAmount" inputmode="numeric" autocomplete="off" placeholder="Contoh: 100000" required>
+        </div>
+        <div class="field">
+          <label for="transferDescription">Keterangan</label>
+          <input type="text" id="transferDescription" autocomplete="off" placeholder="Contoh: Pindah ke tabungan">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="transferDate">Tanggal</label>
+            <input type="date" id="transferDate" required>
+          </div>
+          <div class="field">
+            <label for="transferTime">Jam</label>
+            <input type="time" id="transferTime" step="60">
+          </div>
+        </div>
+        <p class="form-warning" id="transferWarning" hidden></p>
+        <p class="form-error" id="transferError" role="alert" hidden></p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>Batal</button>
+          <button type="submit" class="btn btn-dark" id="transferSubmit">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="walletModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="walletTitle">
+      <div class="modal-head">
+        <h2 id="walletTitle">Tambah Dompet</h2>
+        <button type="button" class="modal-close" data-close-modal aria-label="Tutup">Tutup</button>
+      </div>
+      <form id="walletForm" novalidate>
+        <input type="hidden" id="walletId" value="">
+        <div class="field">
+          <label for="walletName">Nama dompet</label>
+          <input type="text" id="walletName" autocomplete="off" placeholder="Contoh: Tunai" required>
+        </div>
+        <div class="field">
+          <label for="walletInitial">Saldo awal (Rp)</label>
+          <input type="text" id="walletInitial" inputmode="numeric" autocomplete="off" placeholder="0" required>
+        </div>
+        <p class="form-error" id="walletError" role="alert" hidden></p>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-ghost" data-close-modal>Batal</button>
+          <button type="submit" class="btn btn-dark">Simpan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="confirmModal" hidden>
+    <div class="modal modal-small" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmText">
+      <h2 id="confirmTitle">Hapus entri ini?</h2>
+      <p id="confirmText"></p>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" data-close-modal>Batal</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Ya, hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
