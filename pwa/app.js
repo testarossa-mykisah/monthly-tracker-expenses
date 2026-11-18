@@ -559,6 +559,33 @@ function renderHistory() {
   });
 }
 
+/* ---------- Angka muat: kecilkan font, bukan pindah baris ---------- */
+
+/* Angka Rupiah tidak boleh terpotong ke baris bawah: selama masih muat,
+   font-nya yang mengecil. Hanya angka yang benar-benar panjang (masih
+   meluber di ukuran minimum) yang boleh pindah baris. */
+var FIT_MIN_FONT_SIZE = 13;
+
+function fitMoneyText() {
+  var els = document.querySelectorAll(".summary-value, .wallet-balance, .history-amount, .legend-value");
+  for (var i = 0; i < els.length; i++) {
+    var el = els[i];
+    el.classList.remove("fit-wrap");
+    el.style.fontSize = "";
+    var size = parseFloat(window.getComputedStyle(el).fontSize);
+    var guard = 0;
+    while (el.scrollWidth > el.clientWidth && size > FIT_MIN_FONT_SIZE && guard < 40) {
+      size -= 1;
+      el.style.fontSize = size + "px";
+      guard += 1;
+    }
+    if (el.scrollWidth > el.clientWidth) {
+      el.classList.add("fit-wrap");
+      el.style.fontSize = "";
+    }
+  }
+}
+
 function renderAll() {
   ensureDefaultWallet();
   renderHeader();
@@ -566,6 +593,7 @@ function renderAll() {
   renderPie();
   renderWallets();
   renderHistory();
+  fitMoneyText();
 }
 
 /* ---------- Modals ---------- */
@@ -1085,6 +1113,17 @@ document.getElementById("addWalletBtn").addEventListener("click", function () { 
 
 loadData();
 renderAll();
+
+/* Ukur ulang angka saat lebar layar berubah dan setelah font web dimuat,
+   karena keduanya mengubah lebar teks. */
+var fitResizeTimer = null;
+window.addEventListener("resize", function () {
+  if (fitResizeTimer) clearTimeout(fitResizeTimer);
+  fitResizeTimer = setTimeout(fitMoneyText, 150);
+});
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(function () { fitMoneyText(); });
+}
 if (!storageAvailable) {
   showToast("Penyimpanan browser tidak tersedia. Data hanya berlaku sementara di halaman ini.");
 }
