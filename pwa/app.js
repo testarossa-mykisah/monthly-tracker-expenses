@@ -141,6 +141,7 @@ let lastFocusedElement = null;
 let activeModal = null;
 let confirmAction = null;
 let toastTimer = null;
+let toastHideTimer = null;
 
 function loadData() {
   try {
@@ -251,10 +252,25 @@ function monthHistory(monthKey) {
 
 function showToast(message) {
   const toast = document.getElementById("toast");
-  toast.textContent = message;
-  toast.hidden = false;
   if (toastTimer) clearTimeout(toastTimer);
-  toastTimer = setTimeout(function () { toast.hidden = true; }, 4200);
+  if (toastHideTimer) clearTimeout(toastHideTimer);
+  toast.classList.remove("toast-out");
+  toast.textContent = message;
+  const wasHidden = toast.hidden;
+  toast.hidden = false;
+  /* Kalau toast sedang tampil, paksa animasi masuknya berulang dari awal. */
+  if (!wasHidden) {
+    toast.style.animation = "none";
+    void toast.offsetWidth;
+    toast.style.animation = "";
+  }
+  toastTimer = setTimeout(function () {
+    toast.classList.add("toast-out");
+    toastHideTimer = setTimeout(function () {
+      toast.hidden = true;
+      toast.classList.remove("toast-out");
+    }, 260);
+  }, 4200);
 }
 
 function showError(el, message) {
