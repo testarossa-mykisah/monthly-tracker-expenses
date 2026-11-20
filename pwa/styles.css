@@ -20,6 +20,10 @@
 
 * { box-sizing: border-box; }
 
+/* Atribut hidden harus selalu menyembunyikan elemen, termasuk yang
+   display-nya diatur ulang oleh aturan komponen (mis. .field-row). */
+[hidden] { display: none !important; }
+
 html { -webkit-text-size-adjust: 100%; }
 
 body {
@@ -101,6 +105,24 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   width: 72px; height: 72px;
   left: -30px; bottom: -44px;
   background: var(--ink);
+}
+
+.guide-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  background: var(--white);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: 50%;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
 }
 
 .header-eyebrow {
@@ -309,12 +331,25 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
 .btn-danger { background: var(--red); border-color: var(--red-dark); color: var(--white); }
 
 /* Wallets */
-.wallets-section, .history-section {
+.wallets-section, .history-section, .backup-section {
   background: var(--pale);
   border: 2px solid var(--ink);
   border-radius: var(--radius-lg);
   padding: 20px;
 }
+
+.backup-note {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+.backup-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.backup-actions .btn { flex: 1 1 160px; }
 
 .section-head {
   display: flex;
@@ -582,6 +617,68 @@ button, a, input, select { -webkit-tap-highlight-color: transparent; }
   from { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
   to { opacity: 0; transform: translateX(-50%) translateY(12px) scale(0.94); }
 }
+
+/* ---------- Onboarding ---------- */
+.onboarding-count {
+  margin: 0 0 12px;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.onboarding-step h3 { margin: 0 0 8px; font-size: 20px; font-weight: 800; line-height: 1.25; }
+.onboarding-step p { margin: 0; font-size: 15px; color: var(--muted); }
+.onboarding-step p strong { color: var(--ink); }
+.onboarding-dots { display: flex; gap: 8px; margin: 20px 0 0; }
+.onboarding-dots span {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: transparent;
+}
+.onboarding-dots span.is-active { background: var(--ink); }
+.onboarding-foot { justify-content: space-between; }
+
+/* ---------- Catat cepat ---------- */
+.mode-toggle {
+  display: flex;
+  margin-bottom: 16px;
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+.mode-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  background: transparent;
+  color: var(--ink);
+  border: 0;
+  border-radius: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+.mode-btn.is-active { background: var(--ink); color: var(--white); }
+
+.field-label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 800; }
+.quick-amounts { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  min-height: 44px;
+  padding: 10px 14px;
+  background: var(--white);
+  color: var(--ink);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-pill);
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.chip.is-selected { background: var(--lime); font-weight: 800; }
 
 @media (min-width: 480px) {
   .modal-backdrop { align-items: center; }

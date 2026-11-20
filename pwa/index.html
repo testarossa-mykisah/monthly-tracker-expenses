@@ -25,6 +25,7 @@
     <main class="app" id="app">
       <header class="header-card" aria-label="Navigasi bulan">
         <div class="header-decor" aria-hidden="true"><span class="decor-a"></span><span class="decor-b"></span></div>
+        <button type="button" class="guide-btn" id="guideBtn" aria-label="Buka panduan">?</button>
         <p class="header-eyebrow">Tracker Pengeluaran</p>
         <div class="month-nav">
           <button type="button" class="month-btn" id="prevMonth" aria-label="Bulan sebelumnya">
@@ -85,6 +86,16 @@
         <ul class="history-list" id="historyList"></ul>
       </section>
 
+      <section class="backup-section" aria-labelledby="backupTitle">
+        <h2 class="section-title" id="backupTitle">Data &amp; Cadangan</h2>
+        <p class="backup-note">File cadangan berguna saat ganti HP atau ganti alamat &mdash; data di HP ini tidak ikut pindah sendiri.</p>
+        <div class="backup-actions">
+          <button type="button" class="btn btn-dark" id="exportBackupBtn">Export Backup</button>
+          <button type="button" class="btn btn-outline-dark" id="importBackupBtn">Import Backup</button>
+        </div>
+        <input type="file" id="importFileInput" accept=".json,application/json" hidden>
+      </section>
+
       <div class="bottom-spacer" aria-hidden="true"></div>
     </main>
 
@@ -104,15 +115,29 @@
       <form id="transactionForm" novalidate>
         <input type="hidden" id="txId" value="">
         <input type="hidden" id="txType" value="expense">
+        <div class="mode-toggle" id="txModeToggle" role="group" aria-label="Mode pencatatan">
+          <button type="button" class="mode-btn is-active" id="txModeFullBtn" aria-pressed="true">Lengkap</button>
+          <button type="button" class="mode-btn" id="txModeQuickBtn" aria-pressed="false">Cepat</button>
+        </div>
         <div class="field">
           <label for="txAmount">Jumlah (Rp)</label>
           <input type="text" id="txAmount" inputmode="numeric" autocomplete="off" placeholder="Contoh: 50000" required>
+        </div>
+        <div class="quick-amounts" id="quickAmountChips" hidden>
+          <button type="button" class="chip" data-amount="10000">10rb</button>
+          <button type="button" class="chip" data-amount="20000">20rb</button>
+          <button type="button" class="chip" data-amount="50000">50rb</button>
+          <button type="button" class="chip" data-amount="100000">100rb</button>
         </div>
         <div class="field" id="txCategoryField">
           <label for="txCategory">Kategori</label>
           <select id="txCategory"></select>
         </div>
-        <div class="field">
+        <div class="field" id="quickCategoryField" hidden>
+          <span class="field-label" id="quickCategoryLabel">Kategori</span>
+          <div class="chip-grid" id="quickCategoryChips" role="group" aria-labelledby="quickCategoryLabel"></div>
+        </div>
+        <div class="field" id="txDescriptionField">
           <label for="txDescription">Keterangan</label>
           <input type="text" id="txDescription" autocomplete="off" placeholder="Contoh: Makan siang">
         </div>
@@ -120,7 +145,7 @@
           <label for="txWallet">Dompet</label>
           <select id="txWallet" required></select>
         </div>
-        <div class="field-row">
+        <div class="field-row" id="txDateTimeRow">
           <div class="field">
             <label for="txDate">Tanggal</label>
             <input type="date" id="txDate" required>
@@ -218,6 +243,33 @@
       <div class="modal-actions">
         <button type="button" class="btn btn-ghost" data-close-modal>Batal</button>
         <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Ya, hapus</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="onboardingModal" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="onboardingTitle">
+      <div class="modal-head">
+        <h2 id="onboardingTitle">Panduan Singkat</h2>
+        <button type="button" class="modal-close" id="onboardingCloseBtn" aria-label="Tutup panduan">Tutup</button>
+      </div>
+      <p class="onboarding-count" id="onboardingCount">Langkah 1 dari 3</p>
+      <div class="onboarding-step" data-step="0">
+        <h3>Data di HP kamu sendiri</h3>
+        <p>Aplikasi ini <strong>tanpa akun dan tanpa server</strong>. Semua catatan tersimpan di HP ini saja, tidak dikirim ke mana pun.</p>
+      </div>
+      <div class="onboarding-step" data-step="1" hidden>
+        <h3>Catat uang dalam hitungan detik</h3>
+        <p>Tekan <strong>Pengeluaran</strong>, isi jumlah, pilih kategori, lalu simpan. Mau lebih cepat? Pakai mode <strong>Cepat</strong> di dalam form: jumlah, kategori, dompet, langsung simpan.</p>
+      </div>
+      <div class="onboarding-step" data-step="2" hidden>
+        <h3>Jangan lupa backup</h3>
+        <p>Di bagian <strong>Data &amp; Cadangan</strong> kamu bisa export file cadangan, lalu import lagi saat ganti HP atau ganti alamat. Tanpa file ini, data tidak ikut pindah.</p>
+      </div>
+      <div class="onboarding-dots" id="onboardingDots" aria-hidden="true"><span class="is-active"></span><span></span><span></span></div>
+      <div class="modal-actions onboarding-foot">
+        <button type="button" class="btn btn-ghost" id="onboardingSkipBtn">Lewati</button>
+        <button type="button" class="btn btn-dark" id="onboardingNextBtn">Lanjut</button>
       </div>
     </div>
   </div>

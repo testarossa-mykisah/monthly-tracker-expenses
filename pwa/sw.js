@@ -4,7 +4,7 @@
    Hanya men-cache file statis aplikasi agar bisa dibuka offline.
    Tidak ada panggilan API: semua data tinggal di localStorage perangkat. */
 
-const CACHE_NAME = "tracker-pwa-v4";
+const CACHE_NAME = "tracker-pwa-v5";
 
 /* File inti aplikasi. */
 const CORE_ASSETS = [

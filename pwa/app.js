@@ -8,6 +8,9 @@
 
 const STORAGE_KEY = "monthly-tracker-expenses:v1";
 
+/* Versi publik v1 (tanpa akun). Tertulis di file backup hasil export. */
+const APP_VERSION = "1.0.0";
+
 const CATEGORIES = [
   "Makanan & Minuman",
   "Transportasi",
@@ -134,7 +137,10 @@ function escapeHtml(s) {
 
 /* ---------- State ---------- */
 
-let data = { wallets: [], transactions: [], transfers: [], nextSeq: 1 };
+/* onboarded: panduan pertama buka sudah selesai atau dilewati. Disimpan di
+   dalam objek data supaya ikut terbawa saat backup di-import dari HP lain.
+   lastWalletId: dompet terakhir dipakai untuk catat cepat (opsional). */
+let data = { wallets: [], transactions: [], transfers: [], nextSeq: 1, onboarded: false, lastWalletId: null };
 let viewedMonth = currentMonthKey();
 let storageAvailable = true;
 let lastFocusedElement = null;
@@ -153,6 +159,8 @@ function loadData() {
     data.transactions = Array.isArray(parsed.transactions) ? parsed.transactions : [];
     data.transfers = Array.isArray(parsed.transfers) ? parsed.transfers : [];
     data.nextSeq = Number.isInteger(parsed.nextSeq) && parsed.nextSeq > 0 ? parsed.nextSeq : 1;
+    data.onboarded = parsed.onboarded === true;
+    data.lastWalletId = typeof parsed.lastWalletId === "string" ? parsed.lastWalletId : null;
     let seq = data.nextSeq;
     const ensureSeq = function (list) {
       list.forEach(function (r) {
@@ -596,6 +604,48 @@ function renderAll() {
   fitMoneyText();
 }
 
+/* ---------- Onboarding: panduan pertama buka ---------- */
+
+/* Panduan 3 langkah. Muncul sekali: setelah selesai, dilewati, atau
+   ditutup dengan cara apa pun, flag onboarded tersimpan di data dan
+   ikut terbawa di file backup. */
+let onboardingStep = 0;
+
+function renderOnboardingStep() {
+  document.querySelectorAll("#onboardingModal .onboarding-step").forEach(function (stepEl) {
+    stepEl.hidden = Number(stepEl.getAttribute("data-step")) !== onboardingStep;
+  });
+  document.getElementById("onboardingCount").textContent = "Langkah " + (onboardingStep + 1) + " dari 3";
+  document.querySelectorAll("#onboardingDots span").forEach(function (dot, i) {
+    dot.classList.toggle("is-active", i === onboardingStep);
+  });
+  document.getElementById("onboardingNextBtn").textContent = onboardingStep >= 2 ? "Mulai" : "Lanjut";
+}
+
+function showOnboarding() {
+  onboardingStep = 0;
+  renderOnboardingStep();
+  openModal("onboardingModal");
+}
+
+function finishOnboarding() {
+  data.onboarded = true;
+  saveData();
+  closeModal(document.getElementById("onboardingModal"));
+}
+
+document.getElementById("onboardingNextBtn").addEventListener("click", function () {
+  if (onboardingStep < 2) {
+    onboardingStep += 1;
+    renderOnboardingStep();
+  } else {
+    finishOnboarding();
+  }
+});
+document.getElementById("onboardingSkipBtn").addEventListener("click", finishOnboarding);
+document.getElementById("onboardingCloseBtn").addEventListener("click", finishOnboarding);
+document.getElementById("guideBtn").addEventListener("click", showOnboarding);
+
 /* ---------- Modals ---------- */
 
 function focusableIn(modal) {
@@ -635,6 +685,7 @@ document.addEventListener("keydown", function (e) {
   if (!activeModal) return;
   if (e.key === "Escape") {
     e.preventDefault();
+    if (activeModal.id === "onboardingModal") { finishOnboarding(); return; }
     closeModal(activeModal);
     return;
   }
@@ -655,7 +706,10 @@ document.addEventListener("keydown", function (e) {
 
 document.querySelectorAll(".modal-backdrop").forEach(function (backdrop) {
   backdrop.addEventListener("click", function (e) {
-    if (e.target === backdrop) closeModal(backdrop);
+    if (e.target === backdrop) {
+      if (backdrop.id === "onboardingModal") { finishOnboarding(); return; }
+      closeModal(backdrop);
+    }
   });
 });
 document.querySelectorAll("[data-close-modal]").forEach(function (btn) {
@@ -682,9 +736,267 @@ function defaultDateForView() {
   return viewedMonth + "-01";
 }
 
+/* ---------- Data & Cadangan: export / import backup ---------- */
+
+function buildBackupObject() {
+  return {
+    app: "tracker-pengeluaran-bulanan",
+    version: APP_VERSION,
+    exportedAt: new Date().toISOString(),
+    data: {
+      wallets: data.wallets,
+      transactions: data.transactions,
+      transfers: data.transfers,
+      budgets: Array.isArray(data.budgets) ? data.budgets : [],
+      onboarded: data.onboarded === true,
+      lastWalletId: typeof data.lastWalletId === "string" ? data.lastWalletId : null,
+      nextSeq: data.nextSeq,
+    },
+  };
+}
+
+function backupFileName() {
+  const t = localTodayParts();
+  return "tracker-pengeluaran-backup-" + t.y + "-" + pad2(t.m) + "-" + pad2(t.d) + ".json";
+}
+
+function exportBackup() {
+  try {
+    const json = JSON.stringify(buildBackupObject(), null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = backupFileName();
+    /* Anchor harus menempel di DOM supaya klik unduhan jalan di Safari iOS. */
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    showToast("Backup diekspor. Simpan file-nya baik-baik.");
+  } catch (err) {
+    showToast("Gagal mengekspor backup. Coba lagi.");
+  }
+}
+
+/* Sanitasi satu dompet dari file backup; null bila bentuknya tidak bisa dipakai. */
+function sanitizeBackupWallet(w) {
+  if (!w || typeof w !== "object") return null;
+  if (typeof w.id !== "string" || !w.id) return null;
+  if (typeof w.name !== "string" || !w.name.trim()) return null;
+  return {
+    id: w.id,
+    name: w.name.trim(),
+    initialBalance: Number(w.initialBalance) || 0,
+    createdAt: Number.isFinite(w.createdAt) ? w.createdAt : Date.now(),
+  };
+}
+
+function sanitizeBackupTransaction(t) {
+  if (!t || typeof t !== "object") return null;
+  if (typeof t.id !== "string" || !t.id) return null;
+  if (!parseDateParts(t.date)) return null;
+  const type = t.type === "income" ? "income" : "expense";
+  return {
+    id: t.id,
+    type: type,
+    amount: Math.max(0, Math.floor(Number(t.amount) || 0)),
+    description: typeof t.description === "string" ? t.description : "",
+    category: type === "expense" ? (typeof t.category === "string" && t.category ? t.category : "Lainnya") : "Lainnya",
+    walletId: typeof t.walletId === "string" ? t.walletId : "",
+    date: t.date,
+    time: isValidTime(t.time) ? (t.time === "" ? null : t.time) : null,
+    createdAt: Number.isFinite(t.createdAt) ? t.createdAt : Date.now(),
+    seq: Number.isInteger(t.seq) ? t.seq : 0,
+  };
+}
+
+function sanitizeBackupTransfer(tr) {
+  if (!tr || typeof tr !== "object") return null;
+  if (typeof tr.id !== "string" || !tr.id) return null;
+  if (!parseDateParts(tr.date)) return null;
+  return {
+    id: tr.id,
+    fromWalletId: typeof tr.fromWalletId === "string" ? tr.fromWalletId : "",
+    toWalletId: typeof tr.toWalletId === "string" ? tr.toWalletId : "",
+    amount: Math.max(0, Math.floor(Number(tr.amount) || 0)),
+    description: typeof tr.description === "string" ? tr.description : "",
+    date: tr.date,
+    time: isValidTime(tr.time) ? (tr.time === "" ? null : tr.time) : null,
+    createdAt: Number.isFinite(tr.createdAt) ? tr.createdAt : Date.now(),
+    seq: Number.isInteger(tr.seq) ? tr.seq : 0,
+  };
+}
+
+/* Validasi bentuk minimal file backup dan sanitasi isinya.
+   Menerima pembungkus { data: {...} } maupun objek data mentah.
+   Mengembalikan null bila bentuknya tidak valid. */
+function normalizeBackup(parsed) {
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return null;
+  const src = parsed.data && typeof parsed.data === "object" && !Array.isArray(parsed.data) ? parsed.data : parsed;
+  if (!Array.isArray(src.wallets) || !Array.isArray(src.transactions)) return null;
+  const wallets = src.wallets.map(sanitizeBackupWallet).filter(function (w) { return w !== null; });
+  const transactions = src.transactions.map(sanitizeBackupTransaction).filter(function (t) { return t !== null; });
+  const transfers = Array.isArray(src.transfers)
+    ? src.transfers.map(sanitizeBackupTransfer).filter(function (t) { return t !== null; })
+    : [];
+  /* Nomor urut: hormati nextSeq bila ada, lalu pastikan lebih besar dari
+     semua seq yang terbawa; isi seq yang hilang secara berurutan. */
+  let seq = Number.isInteger(src.nextSeq) && src.nextSeq > 0 ? src.nextSeq : 1;
+  [transactions, transfers].forEach(function (list) {
+    list.forEach(function (r) {
+      if (!Number.isInteger(r.seq) || r.seq <= 0) { r.seq = seq; seq += 1; }
+    });
+  });
+  const maxSeq = Math.max.apply(null, [0].concat(transactions.map(function (r) { return r.seq; }), transfers.map(function (r) { return r.seq; })));
+  const nextSeq = Math.max(seq, maxSeq + 1);
+  const walletIds = {};
+  wallets.forEach(function (w) { walletIds[w.id] = true; });
+  return {
+    wallets: wallets,
+    transactions: transactions,
+    transfers: transfers,
+    nextSeq: nextSeq,
+    /* Bila flag tidak ada di file (backup lama), anggap sudah pernah
+       memakai aplikasi supaya panduan tidak muncul lagi setelah import. */
+    onboarded: typeof src.onboarded === "boolean" ? src.onboarded : true,
+    lastWalletId: typeof src.lastWalletId === "string" && walletIds[src.lastWalletId] ? src.lastWalletId : null,
+  };
+}
+
+function applyBackup(clean) {
+  data.wallets = clean.wallets;
+  data.transactions = clean.transactions;
+  data.transfers = clean.transfers;
+  data.nextSeq = clean.nextSeq;
+  data.onboarded = clean.onboarded;
+  data.lastWalletId = clean.lastWalletId;
+  saveData();
+  renderAll();
+}
+
+document.getElementById("exportBackupBtn").addEventListener("click", exportBackup);
+document.getElementById("importBackupBtn").addEventListener("click", function () {
+  document.getElementById("importFileInput").click();
+});
+document.getElementById("importFileInput").addEventListener("change", function (e) {
+  const file = e.target.files && e.target.files[0];
+  e.target.value = "";
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function () {
+    let parsed = null;
+    try { parsed = JSON.parse(String(reader.result)); } catch (err) { parsed = null; }
+    const clean = parsed ? normalizeBackup(parsed) : null;
+    if (!clean) {
+      showToast("File backup tidak valid. Data lama tidak berubah.");
+      return;
+    }
+    openConfirm("Pulihkan backup?", "Data saat ini akan diganti dengan data dari file backup. Lanjutkan?", function () {
+      applyBackup(clean);
+      showToast("Backup dipulihkan.");
+    });
+  };
+  reader.onerror = function () {
+    showToast("File tidak bisa dibaca. Data lama tidak berubah.");
+  };
+  reader.readAsText(file);
+});
+
 /* ---------- Transaction form ---------- */
 
 let txConfirmedOutOfMonth = false;
+
+/* ---------- Catat cepat (mode Cepat di form transaksi) ---------- */
+
+/* Mode Cepat hanya untuk pengeluaran baru: jumlah, chip kategori, dompet.
+   Tanggal dan jam otomatis = sekarang, langsung simpan tanpa konfirmasi
+   pindah bulan. Mode Lengkap tidak berubah perilakunya. */
+let txQuickMode = false;
+let txCurrentType = "expense";
+let quickCategory = CATEGORIES[0];
+
+function renderQuickCategoryChips() {
+  const wrap = document.getElementById("quickCategoryChips");
+  wrap.innerHTML = "";
+  CATEGORIES.forEach(function (cat) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip" + (cat === quickCategory ? " is-selected" : "");
+    b.textContent = cat;
+    b.setAttribute("aria-pressed", String(cat === quickCategory));
+    b.addEventListener("click", function () {
+      quickCategory = cat;
+      renderQuickCategoryChips();
+    });
+    wrap.appendChild(b);
+  });
+}
+
+function syncQuickAmountChips() {
+  const val = document.getElementById("txAmount").value;
+  document.querySelectorAll("#quickAmountChips .chip").forEach(function (chip) {
+    chip.classList.toggle("is-selected", chip.getAttribute("data-amount") === val);
+  });
+}
+
+function setTxMode(quick) {
+  txQuickMode = quick;
+  document.getElementById("txModeFullBtn").classList.toggle("is-active", !quick);
+  document.getElementById("txModeQuickBtn").classList.toggle("is-active", quick);
+  document.getElementById("txModeFullBtn").setAttribute("aria-pressed", String(!quick));
+  document.getElementById("txModeQuickBtn").setAttribute("aria-pressed", String(quick));
+  document.getElementById("quickAmountChips").hidden = !quick;
+  document.getElementById("quickCategoryField").hidden = !quick;
+  document.getElementById("txDescriptionField").hidden = quick;
+  document.getElementById("txDateTimeRow").hidden = quick;
+  document.getElementById("txCategoryField").hidden = quick || txCurrentType !== "expense";
+  if (quick) {
+    hideWarning(document.getElementById("txWarning"));
+    renderQuickCategoryChips();
+    syncQuickAmountChips();
+  } else {
+    updateTxWarning();
+  }
+}
+
+function submitQuickExpense(errorEl) {
+  const parsed = parseAmountInput(document.getElementById("txAmount").value, false);
+  if (!parsed.ok) {
+    showError(errorEl, parsed.error);
+    document.getElementById("txAmount").focus();
+    return;
+  }
+  const walletId = document.getElementById("txWallet").value;
+  if (!walletById(walletId)) {
+    showError(errorEl, "Pilih dompet dulu.");
+    return;
+  }
+  const record = {
+    id: uid(),
+    type: "expense",
+    amount: parsed.value,
+    description: "",
+    category: quickCategory || CATEGORIES[0],
+    walletId: walletId,
+    date: todayStr(),
+    time: nowTimeStr(),
+    createdAt: Date.now(),
+    seq: data.nextSeq++,
+  };
+  try {
+    data.transactions.push(record);
+    data.lastWalletId = walletId;
+    saveData();
+  } catch (err) {
+    showError(errorEl, "Gagal menyimpan. Coba lagi.");
+    return;
+  }
+  closeModal(document.getElementById("transactionModal"));
+  renderAll();
+  const destMonth = monthKeyFromDate(record.date);
+  showToast(destMonth !== viewedMonth ? "Tersimpan di " + monthLabel(destMonth) + "." : "Entri tersimpan.");
+}
 
 function openTransactionModal(type, existingId) {
   const existing = existingId ? data.transactions.find(function (t) { return t.id === existingId; }) : null;
@@ -701,6 +1013,13 @@ function openTransactionModal(type, existingId) {
   document.getElementById("transactionTitle").textContent =
     (existing ? "Ubah " : "Catat ") + (effType === "expense" ? "Pengeluaran" : "Pemasukan");
 
+  txCurrentType = effType;
+  /* Toggle mode hanya untuk pengeluaran baru; saat mengubah entri lama
+     atau mencatat pemasukan, form selalu mode Lengkap. */
+  document.getElementById("txModeToggle").hidden = !!existing || effType !== "expense";
+  if (!existing && effType === "expense") quickCategory = CATEGORIES[0];
+  setTxMode(false);
+
   const categoryField = document.getElementById("txCategoryField");
   const categorySelect = document.getElementById("txCategory");
   if (effType === "expense") {
@@ -714,7 +1033,13 @@ function openTransactionModal(type, existingId) {
     fillSelect(categorySelect, CATEGORIES.map(function (c) { return { value: c, label: c }; }), "Lainnya");
   }
 
-  fillSelect(document.getElementById("txWallet"), walletOptions(), existing ? existing.walletId : (data.wallets[0] ? data.wallets[0].id : ""));
+  /* Dompet default untuk pengeluaran baru: dompet terakhir dipakai
+     (catat cepat), kalau masih ada; selain itu dompet pertama. */
+  let defaultWalletId;
+  if (existing) defaultWalletId = existing.walletId;
+  else if (effType === "expense" && data.lastWalletId && walletById(data.lastWalletId)) defaultWalletId = data.lastWalletId;
+  else defaultWalletId = data.wallets[0] ? data.wallets[0].id : "";
+  fillSelect(document.getElementById("txWallet"), walletOptions(), defaultWalletId);
   document.getElementById("txAmount").value = existing ? String(existing.amount) : "";
   document.getElementById("txDescription").value = existing ? (existing.description || "") : "";
   document.getElementById("txDate").value = existing ? existing.date : defaultDateForView();
@@ -739,12 +1064,26 @@ document.getElementById("txDate").addEventListener("change", function () {
   updateTxWarning();
 });
 
+document.getElementById("txModeFullBtn").addEventListener("click", function () { setTxMode(false); });
+document.getElementById("txModeQuickBtn").addEventListener("click", function () { setTxMode(true); });
+document.getElementById("quickAmountChips").addEventListener("click", function (e) {
+  const btn = e.target.closest ? e.target.closest("[data-amount]") : null;
+  if (!btn) return;
+  document.getElementById("txAmount").value = btn.getAttribute("data-amount");
+  syncQuickAmountChips();
+});
+document.getElementById("txAmount").addEventListener("input", syncQuickAmountChips);
+
 document.getElementById("transactionForm").addEventListener("submit", function (e) {
   e.preventDefault();
   const errorEl = document.getElementById("txError");
   hideError(errorEl);
   const id = document.getElementById("txId").value || null;
   const type = document.getElementById("txType").value === "income" ? "income" : "expense";
+  if (txQuickMode && !id && type === "expense") {
+    submitQuickExpense(errorEl);
+    return;
+  }
   const parsed = parseAmountInput(document.getElementById("txAmount").value, false);
   if (!parsed.ok) {
     showError(errorEl, parsed.error);
@@ -1113,6 +1452,7 @@ document.getElementById("addWalletBtn").addEventListener("click", function () { 
 
 loadData();
 renderAll();
+if (!data.onboarded) showOnboarding();
 
 /* Ukur ulang angka saat lebar layar berubah dan setelah font web dimuat,
    karena keduanya mengubah lebar teks. */
