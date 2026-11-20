@@ -2,17 +2,314 @@
 <html lang="id">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tracker Pengeluaran Bulanan</title>
-  <meta http-equiv="refresh" content="0; url=./pwa/">
-  <link rel="canonical" href="https://testarossa-mykisah.github.io/monthly-tracker-expenses/pwa/">
-  <script>window.location.replace('./pwa/');</script>
-  <style>
-    body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #B8D94E; color: #141414; font-family: system-ui, sans-serif; }
-    a { color: #141414; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tracker Pengeluaran Bulanan — Catat uang tanpa akun</title>
+  <meta name="description" content="Tracker Pengeluaran Bulanan: catat pemasukan, pengeluaran, dompet, dan transfer dalam Rupiah. Tanpa akun, tanpa server, gratis — data tersimpan di HP kamu sendiri.">
+  <meta name="theme-color" content="#B8D94E">
+  <meta name="color-scheme" content="light dark">
+  <script>
+  (function () {
+    try {
+      var t = localStorage.getItem("tracker-theme");
+      if (t !== "light" && t !== "dark") {
+        t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      }
+      document.documentElement.setAttribute("data-theme", t);
+    } catch (e) {
+      document.documentElement.setAttribute("data-theme", "light");
+    }
+  })();
+  </script>
+  <meta property="og:title" content="Tracker Pengeluaran Bulanan — Catat uang tanpa akun">
+  <meta property="og:description" content="Pemasukan, pengeluaran, dompet, dan transfer dalam Rupiah. Tanpa akun, tanpa server, gratis. Data tersimpan di HP kamu sendiri.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://myduitgweh.duckdns.org/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./landing.css">
 </head>
 <body>
-  <p>Membuka Tracker… <a href="./pwa/">klik di sini</a> kalau tidak berpindah otomatis.</p>
+  <a class="skip-link" href="#fitur">Lewati ke fitur</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="wordmark" href="./" aria-label="Tracker Pengeluaran — beranda">
+        <svg class="wordmark-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 L14.5 9.5 L23 12 L14.5 14.5 L12 23 L9.5 14.5 L1 12 L9.5 9.5 Z" fill="currentColor"/></svg>
+        Tracker&nbsp;<span class="wordmark-tail">Pengeluaran</span>
+      </a>
+      <nav class="site-nav" aria-label="Navigasi utama">
+        <a href="#fitur">Fitur</a>
+        <a href="#contoh">Contoh</a>
+        <a href="#privasi">Privasi</a>
+        <a href="#install">Cara Install</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Ganti ke mode gelap">
+        <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5 A8.5 8.5 0 0 1 10.5 4 A8.5 8.5 0 1 0 20 13.5 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5 5l1.7 1.7M17.3 17.3L19 19M19 5l-1.7 1.7M6.7 17.3L5 19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <a class="btn btn-outline btn-header" href="./pwa/">Buka Aplikasi</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero: headline rata kiri + ilustrasi dompet -->
+    <section class="hero" aria-labelledby="heroTitle">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <h1 id="heroTitle">Uangmu tercatat.<br>Tanpa akun,<br>tanpa ribet.</h1>
+          <p class="hero-sub">Pemasukan, pengeluaran, dompet, dan transfer — semua dalam Rupiah, langsung dari HP. Tidak perlu daftar, tidak perlu bayar, dan datamu tidak keluar dari perangkatmu.</p>
+          <div class="hero-cta">
+            <a class="btn btn-dark btn-big" href="./pwa/">Buka Aplikasi</a>
+            <a class="btn btn-outline btn-big" href="#install">Cara Install</a>
+          </div>
+          <p class="hero-note">Gratis, selamanya. Buka di browser, langsung bisa dipakai.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <svg class="wallet-art" viewBox="0 0 520 420" role="presentation">
+            <ellipse cx="260" cy="215" rx="215" ry="72" class="fl-none st-ink" stroke-width="2" opacity="0.45" transform="rotate(-14 260 215)"/>
+            <ellipse cx="260" cy="215" rx="168" ry="52" class="fl-none st-ink" stroke-width="2" opacity="0.3" transform="rotate(-14 260 215)"/>
+            <circle cx="72" cy="300" r="7" class="fl-ink"/>
+            <circle cx="452" cy="118" r="7" class="fl-lime st-ink" stroke-width="2"/>
+            <circle cx="470" cy="310" r="5" class="fl-ink"/>
+            <path d="M92 96 L97 110 L111 115 L97 120 L92 134 L87 120 L73 115 L87 110 Z" class="fl-ink"/>
+            <path d="M448 218 L452 230 L464 234 L452 238 L448 250 L444 238 L432 234 L444 230 Z" class="fl-lime st-ink" stroke-width="1.5"/>
+            <rect x="182" y="118" width="112" height="72" rx="10" class="fl-paper st-ink" stroke-width="2.5" transform="rotate(-8 238 154)"/>
+            <rect x="196" y="132" width="26" height="18" rx="4" class="fl-lime st-ink" stroke-width="2" transform="rotate(-8 238 154)"/>
+            <line x1="196" y1="164" x2="276" y2="164" class="fl-none st-ink" stroke-width="2.5" transform="rotate(-8 238 154)"/>
+            <rect x="150" y="176" width="224" height="132" rx="20" class="fl-ink"/>
+            <path d="M150 196 Q150 176 170 176 L354 176 Q374 176 374 196 L374 212 L150 212 Z" class="fl-lime"/>
+            <rect x="150" y="212" width="224" height="96" rx="0" class="fl-ink"/>
+            <rect x="150" y="288" width="224" height="20" rx="10" class="fl-ink"/>
+            <circle cx="348" cy="252" r="13" class="fl-lime st-paper" stroke-width="2.5"/>
+            <line x1="196" y1="248" x2="300" y2="248" class="fl-none st-line" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+            <line x1="196" y1="270" x2="268" y2="270" class="fl-none st-line" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+            <circle cx="428" cy="132" r="27" class="fl-lime st-ink" stroke-width="2.5"/>
+            <text x="428" y="140" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="19" font-weight="800" class="fl-ink">Rp</text>
+            <circle cx="104" cy="308" r="19" class="fl-paper st-ink" stroke-width="2.5"/>
+            <text x="104" y="315" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="13" font-weight="800" class="fl-ink">Rp</text>
+            <circle cx="418" cy="316" r="13" class="fl-ink"/>
+            <text x="418" y="321" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="10" font-weight="800" class="fl-lime">Rp</text>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Strip kepercayaan -->
+    <div class="trust-strip" aria-label="Tanpa akun, gratis, data di HP, bisa offline">
+      <div class="wrap trust-inner">
+        <span>Tanpa Akun</span><i aria-hidden="true">•</i>
+        <span>Gratis</span><i aria-hidden="true">•</i>
+        <span>Data di HP</span><i aria-hidden="true">•</i>
+        <span>Bisa Offline</span>
+      </div>
+    </div>
+
+    <!-- Fitur: grid 2x2 selang-seling hitam/putih -->
+    <section class="features" id="fitur" aria-labelledby="featuresTitle">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="featuresTitle"><span class="section-label">Fitur</span></h2>
+          <p class="section-intro">Semua yang kamu butuhkan untuk mencatat uang — tanpa yang tidak perlu.</p>
+        </div>
+        <div class="feat-grid">
+          <article class="feat-card feat-white">
+            <h3><span class="hl">Pencatatan</span> Pemasukan &amp; Pengeluaran</h3>
+            <p>Catat pemasukan dan pengeluaran dalam Rupiah, lengkap dengan tanggal dan jam. Geser bulan ke mana saja, tanpa batas.</p>
+            <div class="feat-foot">
+              <a class="learn" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+              <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
+                <rect x="10" y="5" width="28" height="38" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                <line x1="16" y1="15" x2="32" y2="15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="16" y1="23" x2="32" y2="23" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <line x1="16" y1="31" x2="26" y2="31" stroke="#b8d94e" stroke-width="3" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </article>
+          <article class="feat-card feat-black">
+            <h3><span class="hl-w">Dompet</span> &amp; Transfer</h3>
+            <p>Pisahkan uangmu per dompet — Tunai, bank, e-wallet — lalu pindahkan antar dompet kapan saja. Saldo tiap dompet dihitung dari seluruh riwayat.</p>
+            <div class="feat-foot">
+              <a class="learn" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+              <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
+                <rect x="6" y="14" width="36" height="24" rx="6" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                <path d="M6 20 L42 20" stroke="currentColor" stroke-width="2.5"/>
+                <circle cx="34" cy="29" r="4" fill="#b8d94e"/>
+                <path d="M14 8 L20 8 M17 5 L17 11" stroke="#b8d94e" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </article>
+          <article class="feat-card feat-black">
+            <h3><span class="hl-w">Pie</span> Pengeluaran per Kategori</h3>
+            <p>Diagram lingkaran menunjukkan porsi tiap kategori dari total pengeluaran bulan ini. Langsung kelihatan mana yang paling boros.</p>
+            <div class="feat-foot">
+              <a class="learn" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+              <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
+                <circle cx="24" cy="24" r="18" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                <path d="M24 24 L24 6 A18 18 0 0 1 40 33 Z" fill="#b8d94e" stroke="#141414" stroke-width="1.5"/>
+                <line x1="24" y1="24" x2="10" y2="34" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+          </article>
+          <article class="feat-card feat-white">
+            <h3><span class="hl">Backup</span> &amp; Catat Cepat</h3>
+            <p>Catat cepat: jumlah, kategori, simpan — tanggal dan jam terisi otomatis. Backup export/import menjaga datamu saat ganti HP.</p>
+            <div class="feat-foot">
+              <a class="learn" href="#faq">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+              <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
+                <path d="M24 8 L24 28 M16 22 L24 30 L32 22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 34 L10 40 Q10 43 13 43 L35 43 Q38 43 38 40 L38 34" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                <path d="M36 6 L40 12 L36 12 L38 18 L32 10 L36 10 Z" fill="#b8d94e" stroke="#141414" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Banner CTA abu-abu muda -->
+    <section class="cta-banner" aria-labelledby="ctaTitle">
+      <div class="wrap">
+        <div class="cta-panel">
+          <div class="cta-text">
+            <h2 id="ctaTitle">Mulai catat uangmu hari ini</h2>
+            <p>Tidak perlu daftar, tidak perlu bayar. Buka aplikasi dan catat pengeluaran pertamamu kurang dari semenit.</p>
+            <a class="btn btn-dark btn-big" href="./pwa/">Buka Aplikasi Gratis</a>
+          </div>
+          <svg class="cta-art" viewBox="0 0 220 170" aria-hidden="true">
+            <ellipse cx="110" cy="88" rx="96" ry="34" fill="none" stroke="#141414" stroke-width="2" opacity="0.35" transform="rotate(-12 110 88)"/>
+            <ellipse cx="110" cy="88" rx="72" ry="24" fill="none" stroke="#141414" stroke-width="2" opacity="0.25" transform="rotate(-12 110 88)"/>
+            <circle cx="110" cy="88" r="46" fill="#141414"/>
+            <text x="110" y="97" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="26" font-weight="800" fill="#b8d94e">Rp</text>
+            <path d="M188 30 L191 39 L200 42 L191 45 L188 54 L185 45 L176 42 L185 39 Z" fill="#b8d94e" stroke="#141414" stroke-width="1.5"/>
+            <circle cx="34" cy="140" r="6" fill="#141414"/>
+            <circle cx="192" cy="138" r="5" fill="#b8d94e" stroke="#141414" stroke-width="1.5"/>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contoh penggunaan (ilustratif) -->
+    <section class="examples" id="contoh" aria-labelledby="examplesTitle">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="examplesTitle"><span class="section-label">Contoh Penggunaan</span></h2>
+          <p class="section-intro">Tiga gambaran cara orang memakai aplikasi ini. Contoh ilustratif — bukan data pengguna nyata.</p>
+        </div>
+        <div class="examples-card">
+          <article class="example-col">
+            <h3>Ketahuan boros jajan.</h3>
+            <p>Rani melihat pie kategori dan sadar jajan memakan hampir setengah pengeluarannya. Ia mulai membatasi jajan jadi Rp20.000 sehari.</p>
+            <a class="learn learn-lime" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+          </article>
+          <article class="example-col">
+            <h3>Dompet terpisah, hidup tenang.</h3>
+            <p>Budi memisahkan dompet Tunai untuk belanja harian dan Livin&rsquo; untuk tabungan, lalu transfer antar dompet setiap gajian.</p>
+            <a class="learn learn-lime" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+          </article>
+          <article class="example-col">
+            <h3>Pindah HP tanpa drama.</h3>
+            <p>Sari export backup jadi file JSON di HP lama, lalu import di HP baru. Semua dompet dan riwayat ikut pindah.</p>
+            <a class="learn learn-lime" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Privasi -->
+    <section class="privacy" id="privasi" aria-labelledby="privacyTitle">
+      <div class="wrap">
+        <div class="privacy-panel">
+          <h2 id="privacyTitle">Data kamu, di HP kamu.</h2>
+          <p class="privacy-zeros" aria-label="Nol akun, nol server, nol rupiah">
+            <span><b>0</b> akun</span>
+            <span><b>0</b> server</span>
+            <span><b>0</b> rupiah</span>
+          </p>
+          <p class="privacy-text">Tidak ada yang didaftarkan dan tidak ada data yang dikirim ke mana-mana. Semua catatanmu tersimpan di browser HP kamu sendiri — kami tidak pernah melihatnya, karena memang tidak ada tempat untuk melihatnya.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Cara install -->
+    <section class="install" id="install" aria-labelledby="installTitle">
+      <div class="wrap">
+        <h2 id="installTitle">Pasang di HP dalam semenit.</h2>
+        <div class="install-grid">
+          <article class="install-card">
+            <p class="install-os">iPhone</p>
+            <ol>
+              <li>Buka <a href="./pwa/">aplikasi</a> di Safari.</li>
+              <li>Ketuk tombol <b>Share</b> di bawah layar.</li>
+              <li>Pilih <b>Add to Home Screen</b>, lalu <b>Add</b>.</li>
+            </ol>
+            <p class="install-note">Ikon aplikasi muncul di layar utama dan bisa dibuka seperti aplikasi biasa.</p>
+          </article>
+          <article class="install-card">
+            <p class="install-os">Android</p>
+            <ol>
+              <li>Buka <a href="./pwa/">aplikasi</a> di Chrome.</li>
+              <li>Ketuk menu <b>⋮</b> di kanan atas.</li>
+              <li>Pilih <b>Install app</b> atau <b>Tambahkan ke layar utama</b>.</li>
+            </ol>
+            <p class="install-note">Setelah terpasang, aplikasi bisa dibuka offline.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ: tanpa JS, pakai details -->
+    <section class="faq" id="faq" aria-labelledby="faqTitle">
+      <div class="wrap faq-wrap">
+        <h2 id="faqTitle">Yang sering ditanya.</h2>
+        <details>
+          <summary>Apakah gratis?</summary>
+          <p>Ya, sepenuhnya. Tidak ada biaya, tidak ada langganan, tidak ada fitur yang dikunci.</p>
+        </details>
+        <details>
+          <summary>Apakah data saya aman?</summary>
+          <p>Data tersimpan di HP kamu sendiri, di penyimpanan browser. Tidak ada akun dan tidak ada server, jadi tidak ada pihak lain yang bisa mengaksesnya.</p>
+        </details>
+        <details>
+          <summary>Bisa pindah HP?</summary>
+          <p>Bisa. Di HP lama, buka Data &amp; Cadangan lalu Export Backup. Di HP baru, buka aplikasi lalu Import file tersebut — semua dompet dan riwayat ikut pindah.</p>
+        </details>
+        <details>
+          <summary>Apakah butuh akun?</summary>
+          <p>Tidak. Buka aplikasi, langsung catat. Tidak ada email, kata sandi, atau proses daftar.</p>
+        </details>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><strong>Tracker Pengeluaran Bulanan</strong><br><span>Catat uang tanpa akun. Data tinggal di HP kamu.</span></p>
+      <nav aria-label="Tautan footer">
+        <a class="btn btn-dark" href="./pwa/">Buka Aplikasi</a>
+        <a href="https://github.com/testarossa-mykisah/monthly-tracker-expenses">GitHub</a>
+      </nav>
+    </div>
+  </footer>
+  <script>
+  (function () {
+    var root = document.documentElement;
+    var btn = document.getElementById("themeToggle");
+    var meta = document.querySelector('meta[name="theme-color"]');
+    function sync() {
+      var dark = root.getAttribute("data-theme") === "dark";
+      if (btn) btn.setAttribute("aria-label", dark ? "Ganti ke mode terang" : "Ganti ke mode gelap");
+      if (meta) meta.setAttribute("content", dark ? "#0c0c0c" : "#ffffff");
+    }
+    sync();
+    if (btn) btn.addEventListener("click", function () {
+      var next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      try { localStorage.setItem("tracker-theme", next); } catch (e) {}
+      sync();
+    });
+  })();
+  </script>
 </body>
 </html>
