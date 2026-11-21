@@ -9,6 +9,7 @@
   <meta name="color-scheme" content="light dark">
   <script>
   (function () {
+    document.documentElement.classList.add("js");
     try {
       var t = localStorage.getItem("tracker-theme");
       if (t !== "light" && t !== "dark") {
@@ -64,13 +65,13 @@
     <section class="hero" aria-labelledby="heroTitle">
       <div class="wrap hero-grid">
         <div class="hero-copy">
-          <h1 id="heroTitle">Uangmu tercatat.<br>Tanpa akun,<br>tanpa ribet.</h1>
-          <p class="hero-sub">Pemasukan, pengeluaran, dan dompet — semua dalam Rupiah, langsung dari HP.</p>
-          <div class="hero-cta">
+          <h1 id="heroTitle" class="hero-in">Uangmu tercatat.<br>Tanpa akun,<br>tanpa ribet.</h1>
+          <p class="hero-sub hero-in">Pemasukan, pengeluaran, dan dompet — semua dalam Rupiah, langsung dari HP.</p>
+          <div class="hero-cta hero-in">
             <a class="btn btn-dark btn-big" href="./pwa/">Buka Aplikasi</a>
             <a class="btn btn-outline btn-big" href="#install">Cara Install</a>
           </div>
-          <p class="hero-note">Gratis, selamanya.</p>
+          <p class="hero-note hero-in">Gratis, selamanya.</p>
         </div>
         <div class="hero-art" aria-hidden="true">
           <svg class="wallet-art" viewBox="0 0 520 420" role="presentation">
@@ -79,8 +80,8 @@
             <circle cx="72" cy="300" r="7" class="fl-ink"/>
             <circle cx="452" cy="118" r="7" class="fl-lime st-ink" stroke-width="2"/>
             <circle cx="470" cy="310" r="5" class="fl-ink"/>
-            <path d="M92 96 L97 110 L111 115 L97 120 L92 134 L87 120 L73 115 L87 110 Z" class="fl-ink"/>
-            <path d="M448 218 L452 230 L464 234 L452 238 L448 250 L444 238 L432 234 L444 230 Z" class="fl-lime st-ink" stroke-width="1.5"/>
+            <path d="M92 96 L97 110 L111 115 L97 120 L92 134 L87 120 L73 115 L87 110 Z" class="fl-ink twinkle"/>
+            <path d="M448 218 L452 230 L464 234 L452 238 L448 250 L444 238 L432 234 L444 230 Z" class="fl-lime st-ink twinkle twinkle-2" stroke-width="1.5"/>
             <rect x="182" y="118" width="112" height="72" rx="10" class="fl-paper st-ink" stroke-width="2.5" transform="rotate(-8 238 154)"/>
             <rect x="196" y="132" width="26" height="18" rx="4" class="fl-lime st-ink" stroke-width="2" transform="rotate(-8 238 154)"/>
             <line x1="196" y1="164" x2="276" y2="164" class="fl-none st-ink" stroke-width="2.5" transform="rotate(-8 238 154)"/>
@@ -91,9 +92,9 @@
             <circle cx="348" cy="252" r="13" class="fl-lime st-paper" stroke-width="2.5"/>
             <line x1="196" y1="248" x2="300" y2="248" class="fl-none st-line" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
             <line x1="196" y1="270" x2="268" y2="270" class="fl-none st-line" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
-            <circle cx="428" cy="132" r="27" class="fl-lime st-ink" stroke-width="2.5"/>
+            <circle cx="428" cy="132" r="27" class="fl-lime st-ink coin-float" stroke-width="2.5"/>
             <text x="428" y="140" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="19" font-weight="800" class="fl-ink">Rp</text>
-            <circle cx="104" cy="308" r="19" class="fl-paper st-ink" stroke-width="2.5"/>
+            <circle cx="104" cy="308" r="19" class="fl-paper st-ink coin-float-slow" stroke-width="2.5"/>
             <text x="104" y="315" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="13" font-weight="800" class="fl-ink">Rp</text>
             <circle cx="418" cy="316" r="13" class="fl-ink"/>
             <text x="418" y="321" text-anchor="middle" font-family="Plus Jakarta Sans, system-ui, sans-serif" font-size="10" font-weight="800" class="fl-lime">Rp</text>
@@ -102,25 +103,33 @@
       </div>
     </section>
 
-    <!-- Strip kepercayaan -->
+    <!-- Strip kepercayaan: marquee berjalan tanpa henti -->
     <div class="trust-strip" aria-label="Tanpa akun, gratis, data di HP, bisa offline">
-      <div class="wrap trust-inner">
-        <span>Tanpa Akun</span><i aria-hidden="true">•</i>
-        <span>Gratis</span><i aria-hidden="true">•</i>
-        <span>Data di HP</span><i aria-hidden="true">•</i>
-        <span>Bisa Offline</span>
+      <div class="trust-track">
+        <div class="trust-inner">
+          <span>Tanpa Akun</span><i aria-hidden="true">•</i>
+          <span>Gratis</span><i aria-hidden="true">•</i>
+          <span>Data di HP</span><i aria-hidden="true">•</i>
+          <span>Bisa Offline</span><i aria-hidden="true">•</i>
+        </div>
+        <div class="trust-inner" aria-hidden="true">
+          <span>Tanpa Akun</span><i aria-hidden="true">•</i>
+          <span>Gratis</span><i aria-hidden="true">•</i>
+          <span>Data di HP</span><i aria-hidden="true">•</i>
+          <span>Bisa Offline</span><i aria-hidden="true">•</i>
+        </div>
       </div>
     </div>
 
     <!-- Fitur: grid 2x2 selang-seling hitam/putih -->
     <section class="features" id="fitur" aria-labelledby="featuresTitle">
       <div class="wrap">
-        <div class="section-head">
+        <div class="section-head reveal">
           <h2 id="featuresTitle"><span class="section-label">Fitur</span></h2>
           <p class="section-intro">Semua yang kamu butuhkan untuk mencatat uang.</p>
         </div>
         <div class="feat-grid">
-          <article class="feat-card feat-white">
+          <article class="feat-card feat-white reveal" style="--d: 0s">
             <h3><span class="hl">Pencatatan</span> Pemasukan &amp; Pengeluaran</h3>
             <p>Pemasukan dan pengeluaran dalam Rupiah, lengkap dengan tanggal dan jam.</p>
             <div class="feat-foot">
@@ -133,7 +142,7 @@
               </svg>
             </div>
           </article>
-          <article class="feat-card feat-black">
+          <article class="feat-card feat-black reveal" style="--d: 0.08s">
             <h3><span class="hl-w">Dompet</span> &amp; Transfer</h3>
             <p>Pisahkan uang per dompet, pindahkan antar dompet kapan saja.</p>
             <div class="feat-foot">
@@ -146,7 +155,7 @@
               </svg>
             </div>
           </article>
-          <article class="feat-card feat-black">
+          <article class="feat-card feat-black reveal" style="--d: 0.16s">
             <h3><span class="hl-w">Pie</span> Pengeluaran per Kategori</h3>
             <p>Porsi tiap kategori dari total pengeluaran bulan ini, langsung kelihatan.</p>
             <div class="feat-foot">
@@ -158,7 +167,7 @@
               </svg>
             </div>
           </article>
-          <article class="feat-card feat-white">
+          <article class="feat-card feat-white reveal" style="--d: 0.24s">
             <h3><span class="hl">Backup</span> &amp; Catat Cepat</h3>
             <p>Catat cepat dalam hitungan detik. Backup export/import saat ganti HP.</p>
             <div class="feat-foot">
@@ -177,7 +186,7 @@
     <!-- Banner CTA abu-abu muda -->
     <section class="cta-banner" aria-labelledby="ctaTitle">
       <div class="wrap">
-        <div class="cta-panel">
+        <div class="cta-panel reveal">
           <div class="cta-text">
             <h2 id="ctaTitle">Mulai catat uangmu hari ini</h2>
             <p>Tidak perlu daftar, tidak perlu bayar. Kurang dari semenit, pengeluaran pertamamu tercatat.</p>
@@ -199,7 +208,7 @@
     <!-- Privasi -->
     <section class="privacy" id="privasi" aria-labelledby="privacyTitle">
       <div class="wrap">
-        <div class="privacy-panel">
+        <div class="privacy-panel reveal">
           <h2 id="privacyTitle">Data kamu, di HP kamu.</h2>
           <p class="privacy-zeros" aria-label="Nol akun, nol server, nol rupiah">
             <span><b>0</b> akun</span>
@@ -214,8 +223,8 @@
     <!-- Cara install -->
     <section class="install" id="install" aria-labelledby="installTitle">
       <div class="wrap">
-        <h2 id="installTitle">Pasang di HP dalam semenit.</h2>
-        <div class="install-grid">
+        <h2 id="installTitle" class="reveal">Pasang di HP dalam semenit.</h2>
+        <div class="install-grid reveal" style="--d: 0.1s">
           <article class="install-card">
             <p class="install-os">iPhone</p>
             <ol>
@@ -241,7 +250,7 @@
   </main>
 
   <footer class="site-footer">
-    <div class="wrap footer-inner">
+    <div class="wrap footer-inner reveal">
       <p><strong>Tracker Pengeluaran Bulanan</strong><br><span>Catat uang tanpa akun. Data tinggal di HP kamu.</span></p>
       <nav aria-label="Tautan footer">
         <a class="btn btn-dark" href="./pwa/">Buka Aplikasi</a>
@@ -266,6 +275,23 @@
       try { localStorage.setItem("tracker-theme", next); } catch (e) {}
       sync();
     });
+    /* Scroll reveal: elemen .reveal muncul halus saat masuk viewport.
+       Class "js" di <html> (dari skrip <head>) yang mengaktifkan keadaan
+       tersembunyi, jadi tanpa JS semua tetap terlihat. */
+    var revealEls = document.querySelectorAll(".reveal");
+    if ("IntersectionObserver" in window && revealEls.length) {
+      var revealObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+      revealEls.forEach(function (el) { revealObserver.observe(el); });
+    } else {
+      revealEls.forEach(function (el) { el.classList.add("is-visible"); });
+    }
     /* Loader: tampil saat halaman dibuka, hilang halus setelah load. */
     var loader = document.getElementById("loader");
     var shownAt = Date.now();

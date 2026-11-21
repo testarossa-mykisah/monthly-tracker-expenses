@@ -139,7 +139,9 @@ li { list-style: none; }
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
 }
+.btn:hover { transform: translateY(-2px); }
 .btn-big { min-height: 56px; padding: 14px 28px; font-size: 17px; }
 .btn-dark { background: var(--btn-bg); color: var(--btn-fg); }
 .btn-outline { border-color: var(--ink); color: var(--ink); background: transparent; }
@@ -227,8 +229,10 @@ li { list-style: none; }
   margin-top: 32px;
 }
 .hero-note { margin-top: 18px; font-size: 15px; font-weight: 700; }
-.hero-art { justify-self: end; width: 100%; max-width: 520px; }
-.wallet-art { display: block; width: 100%; height: auto; }
+.hero-art { justify-self: end; width: 100%; max-width: 520px; animation: hero-art-in 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.05s both; }
+@keyframes hero-art-in { from { opacity: 0; transform: translateY(24px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.wallet-art { display: block; width: 100%; height: auto; animation: wallet-bob 5s ease-in-out 2.2s infinite; }
+@keyframes wallet-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
 /* Kelas warna ilustrasi dompet (mengikuti tema lewat variabel). */
 .fl-ink { fill: var(--art-ink); }
@@ -239,19 +243,31 @@ li { list-style: none; }
 .st-paper { stroke: var(--art-paper); }
 .st-line { stroke: var(--art-line); }
 
-/* ---------- Strip kepercayaan ---------- */
+/* ---------- Strip kepercayaan: marquee berjalan tanpa henti ---------- */
 .trust-strip {
   padding: 24px 0;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
+.trust-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 22s linear infinite;
+}
+.trust-track:hover { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 .trust-inner {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 10px 16px;
+  padding-right: 16px;
   font-weight: 800;
   font-size: 18px;
   color: var(--ink);
+  white-space: nowrap;
 }
 .trust-inner i { color: var(--lime); font-style: normal; }
 
@@ -293,7 +309,9 @@ li { list-style: none; }
   min-height: 250px;
   padding: 32px;
   border-radius: 28px;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
+.feat-card:hover { transform: translateY(-4px); }
 .feat-white {
   background: var(--card-a-bg);
   color: var(--card-a-fg);
@@ -351,10 +369,13 @@ li { list-style: none; }
   border-radius: 50%;
   font-style: normal;
   font-size: 16px;
+  transition: transform 200ms ease;
 }
+.learn:hover .arr { transform: translateX(4px); }
 .feat-white .arr { background: var(--card-a-fg); color: var(--card-a-bg); }
 .feat-black .arr { background: var(--card-b-fg); color: var(--card-b-bg); }
-.feat-icon { width: 88px; height: 88px; flex: none; }
+.feat-icon { width: 88px; height: 88px; flex: none; transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1); }
+.feat-card:hover .feat-icon { transform: translateY(-4px) rotate(-4deg); }
 
 /* ---------- Banner CTA abu-abu muda (tetap terang di kedua mode) ---------- */
 .cta-banner { padding: 8px 0 80px; }
@@ -376,7 +397,8 @@ li { list-style: none; }
   color: rgba(20, 20, 20, 0.72);
 }
 .cta-panel .btn { margin-top: 28px; background: #141414; color: #ffffff; }
-.cta-art { width: 200px; height: auto; flex: none; }
+.cta-art { width: 200px; height: auto; flex: none; animation: cta-bob 4.5s ease-in-out infinite; }
+@keyframes cta-bob { 0%, 100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(2deg); } }
 
 /* ---------- Privasi ---------- */
 .privacy { padding: 8px 0 80px; }
@@ -504,6 +526,30 @@ li { list-style: none; }
 .loader-bar i { display: block; height: 100%; width: 40%; border-radius: 999px; background: var(--lime); animation: bar-slide 1s ease-in-out infinite; }
 @keyframes bar-slide { 0% { transform: translateX(-110%); } 100% { transform: translateX(400%); } }
 
+/* ---------- Animasi masuk hero & elemen mengambang ---------- */
+/* Headline dan kawan-kawan naik satu per satu setelah loader terangkat. */
+.hero-in { animation: hero-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) both; }
+.hero-copy .hero-in:nth-child(1) { animation-delay: 0.85s; }
+.hero-copy .hero-in:nth-child(2) { animation-delay: 1s; }
+.hero-copy .hero-in:nth-child(3) { animation-delay: 1.15s; }
+.hero-copy .hero-in:nth-child(4) { animation-delay: 1.3s; }
+@keyframes hero-rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+/* Koin dan bintang di ilustrasi dompet bergerak pelan tanpa henti. */
+.coin-float { animation: coin-float 3s ease-in-out infinite; }
+.coin-float-slow { animation: coin-float 4.2s ease-in-out 0.6s infinite; }
+@keyframes coin-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+.twinkle { animation: twinkle 2.4s ease-in-out infinite; }
+.twinkle-2 { animation-delay: 1.2s; }
+@keyframes twinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+/* ---------- Scroll reveal ---------- */
+/* Keadaan tersembunyi hanya aktif bila JS jalan (class "js" di <html>),
+   jadi tanpa JS semua tetap terlihat. Animasi memakai fill "backwards"
+   supaya setelah selesai tidak menahan transform hover kartu. */
+.reveal.is-visible { animation: reveal-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0s) backwards; }
+@keyframes reveal-rise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+html.js .reveal:not(.is-visible) { opacity: 0; }
+
 /* ---------- Responsif ---------- */
 @media (max-width: 900px) {
   .hero-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -529,5 +575,9 @@ li { list-style: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  * { transition: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  html.js .reveal:not(.is-visible) { opacity: 1; }
+  .trust-track { width: 100%; flex-wrap: wrap; justify-content: center; }
+  .trust-inner { flex-wrap: wrap; justify-content: center; }
+  .trust-inner[aria-hidden="true"] { display: none; }
 }
