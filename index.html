@@ -30,6 +30,14 @@
   <link rel="stylesheet" href="./landing.css">
 </head>
 <body>
+  <!-- Loader: koin Rp berputar saat halaman dibuka -->
+  <div class="loader" id="loader" aria-hidden="true">
+    <div class="loader-coin"><span>Rp</span></div>
+    <p class="loader-text">Menyiapkan dompetmu…</p>
+    <div class="loader-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="loader-bar" aria-hidden="true"><i></i></div>
+  </div>
+  <noscript><style>.loader { display: none !important; }</style></noscript>
   <a class="skip-link" href="#fitur">Lewati ke fitur</a>
 
   <header class="site-header">
@@ -40,10 +48,8 @@
       </a>
       <nav class="site-nav" aria-label="Navigasi utama">
         <a href="#fitur">Fitur</a>
-        <a href="#contoh">Contoh</a>
         <a href="#privasi">Privasi</a>
         <a href="#install">Cara Install</a>
-        <a href="#faq">FAQ</a>
       </nav>
       <button type="button" class="theme-toggle" id="themeToggle" aria-label="Ganti ke mode gelap">
         <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 13.5 A8.5 8.5 0 0 1 10.5 4 A8.5 8.5 0 1 0 20 13.5 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -59,12 +65,12 @@
       <div class="wrap hero-grid">
         <div class="hero-copy">
           <h1 id="heroTitle">Uangmu tercatat.<br>Tanpa akun,<br>tanpa ribet.</h1>
-          <p class="hero-sub">Pemasukan, pengeluaran, dompet, dan transfer — semua dalam Rupiah, langsung dari HP. Tidak perlu daftar, tidak perlu bayar, dan datamu tidak keluar dari perangkatmu.</p>
+          <p class="hero-sub">Pemasukan, pengeluaran, dan dompet — semua dalam Rupiah, langsung dari HP.</p>
           <div class="hero-cta">
             <a class="btn btn-dark btn-big" href="./pwa/">Buka Aplikasi</a>
             <a class="btn btn-outline btn-big" href="#install">Cara Install</a>
           </div>
-          <p class="hero-note">Gratis, selamanya. Buka di browser, langsung bisa dipakai.</p>
+          <p class="hero-note">Gratis, selamanya.</p>
         </div>
         <div class="hero-art" aria-hidden="true">
           <svg class="wallet-art" viewBox="0 0 520 420" role="presentation">
@@ -111,12 +117,12 @@
       <div class="wrap">
         <div class="section-head">
           <h2 id="featuresTitle"><span class="section-label">Fitur</span></h2>
-          <p class="section-intro">Semua yang kamu butuhkan untuk mencatat uang — tanpa yang tidak perlu.</p>
+          <p class="section-intro">Semua yang kamu butuhkan untuk mencatat uang.</p>
         </div>
         <div class="feat-grid">
           <article class="feat-card feat-white">
             <h3><span class="hl">Pencatatan</span> Pemasukan &amp; Pengeluaran</h3>
-            <p>Catat pemasukan dan pengeluaran dalam Rupiah, lengkap dengan tanggal dan jam. Geser bulan ke mana saja, tanpa batas.</p>
+            <p>Pemasukan dan pengeluaran dalam Rupiah, lengkap dengan tanggal dan jam.</p>
             <div class="feat-foot">
               <a class="learn" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
               <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
@@ -129,7 +135,7 @@
           </article>
           <article class="feat-card feat-black">
             <h3><span class="hl-w">Dompet</span> &amp; Transfer</h3>
-            <p>Pisahkan uangmu per dompet — Tunai, bank, e-wallet — lalu pindahkan antar dompet kapan saja. Saldo tiap dompet dihitung dari seluruh riwayat.</p>
+            <p>Pisahkan uang per dompet, pindahkan antar dompet kapan saja.</p>
             <div class="feat-foot">
               <a class="learn" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
               <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
@@ -142,7 +148,7 @@
           </article>
           <article class="feat-card feat-black">
             <h3><span class="hl-w">Pie</span> Pengeluaran per Kategori</h3>
-            <p>Diagram lingkaran menunjukkan porsi tiap kategori dari total pengeluaran bulan ini. Langsung kelihatan mana yang paling boros.</p>
+            <p>Porsi tiap kategori dari total pengeluaran bulan ini, langsung kelihatan.</p>
             <div class="feat-foot">
               <a class="learn" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
               <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
@@ -154,9 +160,9 @@
           </article>
           <article class="feat-card feat-white">
             <h3><span class="hl">Backup</span> &amp; Catat Cepat</h3>
-            <p>Catat cepat: jumlah, kategori, simpan — tanggal dan jam terisi otomatis. Backup export/import menjaga datamu saat ganti HP.</p>
+            <p>Catat cepat dalam hitungan detik. Backup export/import saat ganti HP.</p>
             <div class="feat-foot">
-              <a class="learn" href="#faq">Pelajari <span class="arr" aria-hidden="true">→</span></a>
+              <a class="learn" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
               <svg class="feat-icon" viewBox="0 0 48 48" aria-hidden="true">
                 <path d="M24 8 L24 28 M16 22 L24 30 L32 22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <path d="M10 34 L10 40 Q10 43 13 43 L35 43 Q38 43 38 40 L38 34" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
@@ -174,7 +180,7 @@
         <div class="cta-panel">
           <div class="cta-text">
             <h2 id="ctaTitle">Mulai catat uangmu hari ini</h2>
-            <p>Tidak perlu daftar, tidak perlu bayar. Buka aplikasi dan catat pengeluaran pertamamu kurang dari semenit.</p>
+            <p>Tidak perlu daftar, tidak perlu bayar. Kurang dari semenit, pengeluaran pertamamu tercatat.</p>
             <a class="btn btn-dark btn-big" href="./pwa/">Buka Aplikasi Gratis</a>
           </div>
           <svg class="cta-art" viewBox="0 0 220 170" aria-hidden="true">
@@ -190,33 +196,6 @@
       </div>
     </section>
 
-    <!-- Contoh penggunaan (ilustratif) -->
-    <section class="examples" id="contoh" aria-labelledby="examplesTitle">
-      <div class="wrap">
-        <div class="section-head">
-          <h2 id="examplesTitle"><span class="section-label">Contoh Penggunaan</span></h2>
-          <p class="section-intro">Tiga gambaran cara orang memakai aplikasi ini. Contoh ilustratif — bukan data pengguna nyata.</p>
-        </div>
-        <div class="examples-card">
-          <article class="example-col">
-            <h3>Ketahuan boros jajan.</h3>
-            <p>Rani melihat pie kategori dan sadar jajan memakan hampir setengah pengeluarannya. Ia mulai membatasi jajan jadi Rp20.000 sehari.</p>
-            <a class="learn learn-lime" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
-          </article>
-          <article class="example-col">
-            <h3>Dompet terpisah, hidup tenang.</h3>
-            <p>Budi memisahkan dompet Tunai untuk belanja harian dan Livin&rsquo; untuk tabungan, lalu transfer antar dompet setiap gajian.</p>
-            <a class="learn learn-lime" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
-          </article>
-          <article class="example-col">
-            <h3>Pindah HP tanpa drama.</h3>
-            <p>Sari export backup jadi file JSON di HP lama, lalu import di HP baru. Semua dompet dan riwayat ikut pindah.</p>
-            <a class="learn learn-lime" href="./pwa/">Pelajari <span class="arr" aria-hidden="true">→</span></a>
-          </article>
-        </div>
-      </div>
-    </section>
-
     <!-- Privasi -->
     <section class="privacy" id="privasi" aria-labelledby="privacyTitle">
       <div class="wrap">
@@ -227,7 +206,7 @@
             <span><b>0</b> server</span>
             <span><b>0</b> rupiah</span>
           </p>
-          <p class="privacy-text">Tidak ada yang didaftarkan dan tidak ada data yang dikirim ke mana-mana. Semua catatanmu tersimpan di browser HP kamu sendiri — kami tidak pernah melihatnya, karena memang tidak ada tempat untuk melihatnya.</p>
+          <p class="privacy-text">Tidak ada akun, tidak ada server. Catatanmu tersimpan di browser HP kamu sendiri.</p>
         </div>
       </div>
     </section>
@@ -241,17 +220,17 @@
             <p class="install-os">iPhone</p>
             <ol>
               <li>Buka <a href="./pwa/">aplikasi</a> di Safari.</li>
-              <li>Ketuk tombol <b>Share</b> di bawah layar.</li>
-              <li>Pilih <b>Add to Home Screen</b>, lalu <b>Add</b>.</li>
+              <li>Ketuk tombol <b>Share</b>.</li>
+              <li>Pilih <b>Add to Home Screen</b>.</li>
             </ol>
-            <p class="install-note">Ikon aplikasi muncul di layar utama dan bisa dibuka seperti aplikasi biasa.</p>
+            <p class="install-note">Ikonnya muncul di layar utama.</p>
           </article>
           <article class="install-card">
             <p class="install-os">Android</p>
             <ol>
               <li>Buka <a href="./pwa/">aplikasi</a> di Chrome.</li>
-              <li>Ketuk menu <b>⋮</b> di kanan atas.</li>
-              <li>Pilih <b>Install app</b> atau <b>Tambahkan ke layar utama</b>.</li>
+              <li>Ketuk menu <b>⋮</b>.</li>
+              <li>Pilih <b>Install app</b>.</li>
             </ol>
             <p class="install-note">Setelah terpasang, aplikasi bisa dibuka offline.</p>
           </article>
@@ -259,28 +238,6 @@
       </div>
     </section>
 
-    <!-- FAQ: tanpa JS, pakai details -->
-    <section class="faq" id="faq" aria-labelledby="faqTitle">
-      <div class="wrap faq-wrap">
-        <h2 id="faqTitle">Yang sering ditanya.</h2>
-        <details>
-          <summary>Apakah gratis?</summary>
-          <p>Ya, sepenuhnya. Tidak ada biaya, tidak ada langganan, tidak ada fitur yang dikunci.</p>
-        </details>
-        <details>
-          <summary>Apakah data saya aman?</summary>
-          <p>Data tersimpan di HP kamu sendiri, di penyimpanan browser. Tidak ada akun dan tidak ada server, jadi tidak ada pihak lain yang bisa mengaksesnya.</p>
-        </details>
-        <details>
-          <summary>Bisa pindah HP?</summary>
-          <p>Bisa. Di HP lama, buka Data &amp; Cadangan lalu Export Backup. Di HP baru, buka aplikasi lalu Import file tersebut — semua dompet dan riwayat ikut pindah.</p>
-        </details>
-        <details>
-          <summary>Apakah butuh akun?</summary>
-          <p>Tidak. Buka aplikasi, langsung catat. Tidak ada email, kata sandi, atau proses daftar.</p>
-        </details>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer">
@@ -309,6 +266,20 @@
       try { localStorage.setItem("tracker-theme", next); } catch (e) {}
       sync();
     });
+    /* Loader: tampil saat halaman dibuka, hilang halus setelah load. */
+    var loader = document.getElementById("loader");
+    var shownAt = Date.now();
+    function hideLoader() {
+      if (!loader || loader.classList.contains("loader-done")) return;
+      var wait = Math.max(0, 700 - (Date.now() - shownAt));
+      setTimeout(function () {
+        loader.classList.add("loader-done");
+        setTimeout(function () { loader.remove(); }, 500);
+      }, wait);
+    }
+    if (document.readyState === "complete") hideLoader();
+    else window.addEventListener("load", hideLoader);
+    setTimeout(hideLoader, 3000); /* pengaman: jangan pernah menahan halaman */
   })();
   </script>
 </body>
