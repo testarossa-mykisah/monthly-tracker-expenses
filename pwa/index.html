@@ -20,6 +20,15 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Splash: tirai lime dengan koin Rp, terangkat 0,8 detik saat aplikasi siap -->
+  <div class="app-splash" id="appSplash" aria-hidden="true">
+    <div class="app-splash-coin"><span>Rp</span></div>
+    <p class="app-splash-title">Tracker Pengeluaran</p>
+    <p class="app-splash-text">Menyiapkan dompetmu…</p>
+    <div class="app-splash-dots" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="app-splash-bar" aria-hidden="true"><i></i></div>
+  </div>
+  <noscript><style>.app-splash { display: none !important; }</style></noscript>
   <a class="skip-link" href="#ringkasan">Lewati ke ringkasan</a>
   <div class="page">
     <main class="app" id="app">
@@ -277,5 +286,28 @@
   <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
   <script src="app.js" defer></script>
+  <script>
+  /* Splash: tampil saat aplikasi dibuka, tirai terangkat 0,8 detik setelah
+     aplikasi siap (window load = setelah renderAll di app.js). Pengaman
+     3 detik memastikan splash tidak pernah menahan aplikasi. */
+  (function () {
+    var splash = document.getElementById("appSplash");
+    if (!splash) return;
+    var shownAt = Date.now();
+    var done = false;
+    function hide() {
+      if (done) return;
+      done = true;
+      var wait = Math.max(0, 600 - (Date.now() - shownAt));
+      setTimeout(function () {
+        splash.classList.add("is-leaving");
+        setTimeout(function () { splash.remove(); }, 850);
+      }, wait);
+    }
+    if (document.readyState === "complete") hide();
+    else window.addEventListener("load", hide);
+    setTimeout(hide, 3000);
+  })();
+  </script>
 </body>
 </html>
