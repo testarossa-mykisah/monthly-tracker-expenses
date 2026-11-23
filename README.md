@@ -10,7 +10,7 @@ Folder `pwa/` berisi versi mandiri yang bisa di-install di iOS dan Android
 tanpa server: data tersimpan di HP saja (localStorage), bisa dibuka
 offline, dan tidak tersinkron ke versi fullstack di atas.
 
-Coba di HP: https://testarossa-mykisah.github.io/monthly-tracker-expenses/pwa/
+Coba di HP: https://myduitgweh.duckdns.org/
 (perlu GitHub Pages aktif: Settings → Pages → Deploy from a branch, main,
 `/(root)`).
 
